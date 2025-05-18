@@ -27,3 +27,11 @@ Route::prefix('societe')->group(function () {
     Route::post('/register', [SocietePartenaireController::class, 'register']);
     Route::post('/login', [SocietePartenaireController::class, 'login']);
 });
+Route::prefix('agent')->group(function () {
+    Route::post('/register', [AgentController::class, 'register']);
+    Route::post('/login', [AgentController::class, 'login']);
+});
+Route::prefix('agence')->group(function () {
+    Route::post('/register', [AgenceController::class, 'register']);
+    Route::post('/login', [AgenceController::class, 'login']);
+});

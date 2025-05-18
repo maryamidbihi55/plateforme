@@ -2,10 +2,10 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Laravel\Sanctum\HasApiTokens;
 class Agent extends Model {
-    use HasFactory;
-    protected $fillable = ['nom', 'prénom', 'email', 'téléphone', 'spécialité', 'id_agence', 'user_id'];
+    use HasApiTokens, HasFactory;
+    protected $fillable = ['nom', 'prénom', 'email', 'téléphone', 'spécialité', 'id_agence', 'mot_de_passe'];
 
     public function agence() {
         return $this->belongsTo(Agence::class);
@@ -17,5 +17,4 @@ class Agent extends Model {
     public function user() {
         return $this->belongsTo(User::class);
     }
-
 }
