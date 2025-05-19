@@ -17,6 +17,7 @@ class SocietePartenaire extends Model
         'adresse',
         'id_catégorie',
         'mot_de_passe',
+        'is_validated',
     ];
 
     public function categorie()

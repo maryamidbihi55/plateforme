@@ -5,12 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 class Agence extends Model {
      use HasApiTokens, HasFactory;
-    protected $fillable = ['nom_agence', 'adresse', 'téléphone', 'id_société', 'mot_de_passe', 'email'];
+    protected $fillable = ['nom_agence', 'adresse', 'téléphone', 'id_société', 'mot_de_passe', 'email','is_validated'];
 
-    public function société() {
-        return $this->belongsTo(SocietePartenaire::class);
-    }
-
+public function societePartenaire()
+{
+    return $this->belongsTo(SocietePartenaire::class, 'id_société');
+}
     public function agents() {
         return $this->hasMany(Agent::class);
     }

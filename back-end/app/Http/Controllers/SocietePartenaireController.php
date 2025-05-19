@@ -31,31 +31,46 @@ class SocietePartenaireController extends Controller
             'adresse' => $request->adresse,
             'id_catégorie' => $request->id_catégorie,
             'mot_de_passe' => Hash::make($request->mot_de_passe),
+            'is_validated' => false 
         ]);
 
         $token = $societe->createToken('societe-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Inscription réussie',
+            'message' => 'Votre demande d\'inscription a été envoyée avec succès. Vous recevrez un message une fois que votre compte aura été validé par l\'administrateur.',
             'token' => $token,
             'societe' => $societe
         ]);
     }
 
     public function login(Request $request)
-    {
-        $societe = SocietePartenaire::where('email', $request->email)->first();
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'mot_de_passe' => 'required|string',
+    ]);
 
-        if (!$societe || !Hash::check($request->mot_de_passe, $societe->mot_de_passe)) {
-            return response()->json(['message' => 'Identifiants invalides'], 401);
-        }
-
-        $token = $societe->createToken('societe-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Connexion réussie',
-            'token' => $token,
-            'societe' => $societe
-        ]);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    $societe = SocietePartenaire::where('email', $request->email)->first();
+
+    if (!$societe || !Hash::check($request->mot_de_passe, $societe->mot_de_passe)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    if (!$societe->is_validated) {
+        return response()->json(['message' => 'Votre compte n\'a pas encore été validé par l\'administrateur.'], 403);
+    }
+
+    $token = $societe->createToken('societe-token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Connexion réussie',
+        'token' => $token,
+        'societe' => $societe
+    ]);
+}
+
 }

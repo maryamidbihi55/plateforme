@@ -33,6 +33,7 @@ class AgentController extends Controller
             'spécialité' => $request->spécialité,
             'id_agence' => $request->id_agence,
             'mot_de_passe' => Hash::make($request->mot_de_passe),
+            'is_validated' => false ,
         ]);
 
         $token = $agent->createToken('agent-token')->plainTextToken;
@@ -45,21 +46,38 @@ class AgentController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $agent = Agent::where('email', $request->email)->first();
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'mot_de_passe' => 'required|string',
+    ]);
 
-        if (!$agent || !Hash::check($request->mot_de_passe, $agent->mot_de_passe)) {
-            return response()->json(['message' => 'Identifiants invalides'], 401);
-        }
-
-        $token = $agent->createToken('agent-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Connexion réussie',
-            'token' => $token,
-            'agent' => $agent
-        ]);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    $agent = Agent::where('email', $request->email)->first();
+
+    if (!$agent || !Hash::check($request->mot_de_passe, $agent->mot_de_passe)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    // ✅ Vérification : agent validé par l'agence ?
+    if (!$agent->is_validated) {
+        return response()->json([
+            'message' => 'Votre compte n\'a pas encore été validé. Veuillez attendre la validation par l\'agence.'
+        ], 403);
+    }
+
+    $token = $agent->createToken('agent-token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Connexion réussie',
+        'token' => $token,
+        'agent' => $agent
+    ]);
+}
+
 
     public function index()
     {

@@ -31,40 +31,51 @@ class AgenceController extends Controller
             'email'        => $request->email,
             'mot_de_passe' => Hash::make($request->mot_de_passe),
             'id_société'   => $request->id_société,
+            'is_validated' => false 
         ]);
 
         $token = $agence->createToken('agence-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Agence enregistrée avec succès',
+            'message' => 'Votre demande d\'inscription a été envoyée. Vous pourrez vous connecter une fois que votre agence aura été validée par la société partenaire.',
             'token'   => $token,
             'agence'  => $agence
         ]);
     }
 
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email'        => 'required|email',
-            'mot_de_passe' => 'required|string',
-        ]);
+   public function login(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email'        => 'required|email',
+        'mot_de_passe' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $agence = Agence::where('email', $request->email)->first();
-
-        if (!$agence || !Hash::check($request->mot_de_passe, $agence->mot_de_passe)) {
-            return response()->json(['message' => 'Identifiants invalides'], 401);
-        }
-
-        $token = $agence->createToken('agence-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Connexion réussie',
-            'token'   => $token,
-            'agence'  => $agence
-        ]);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    $agence = Agence::where('email', $request->email)->first();
+
+    if (!$agence || !Hash::check($request->mot_de_passe, $agence->mot_de_passe)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    // Vérifier si l'agence est validée
+    if (!$agence->is_validated) {
+        return response()->json(['message' => 'Votre compte agence n\'a pas encore été validé. Veuillez attendre la validation.'], 403);
+    }
+
+    // Vérifier si la société partenaire est validée
+    if (!$agence->societePartenaire || !$agence->societePartenaire->is_validated) {
+        return response()->json(['message' => 'La société partenaire associée à votre agence n\'est pas encore validée.'], 403);
+    }
+
+    $token = $agence->createToken('agence-token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Connexion réussie',
+        'token'   => $token,
+        'agence'  => $agence
+    ]);
+}
 }
