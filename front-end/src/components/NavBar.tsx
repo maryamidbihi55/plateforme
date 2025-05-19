@@ -8,6 +8,13 @@ import {
   Menu,
   X
 } from "lucide-react";
+import {
+  Building,
+  Briefcase,
+  LayoutDashboard,
+  ShieldCheck,
+  
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -41,10 +48,36 @@ const NavBar = () => {
   ];
 
   const userSpaces = [
-    { label: "Espace client", path: "/client", icon: <User className="mr-2 h-4 w-4" />, key: "client" },
-    { label: "Espace société", path: "/societe", icon: <Users className="mr-2 h-4 w-4" />, key: "societe" },
-    { label: "Espace agent", path: "/agent", icon: <User className="mr-2 h-4 w-4" />, key: "agent" },
-    { label: "Administration", path: "/admin", icon: <Settings className="mr-2 h-4 w-4" />, key: "admin" }
+    {
+    label: "Espace client",
+    path: "/client",
+    icon: <User className="mr-2 h-4 w-4" />,
+    key: "client",
+  },
+  {
+    label: "Espace société",
+    path: "/societe",
+    icon: <Building className="mr-2 h-4 w-4" />,
+    key: "societe",
+  },
+  {
+    label: "Espace agence",
+    path: "/agence",
+    icon: <Briefcase className="mr-2 h-4 w-4" />,
+    key: "agence",
+  },
+  {
+    label: "Espace agent",
+    path: "/agent",
+    icon: <ShieldCheck className="mr-2 h-4 w-4" />,
+    key: "agent",
+  },
+  {
+    label: "Administration",
+    path: "/admin",
+    icon: <LayoutDashboard className="mr-2 h-4 w-4" />,
+    key: "admin",
+  },
   ];
 
   return (
