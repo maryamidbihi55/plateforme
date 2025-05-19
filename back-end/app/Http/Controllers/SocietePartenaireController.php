@@ -31,7 +31,7 @@ class SocietePartenaireController extends Controller
             'adresse' => $request->adresse,
             'id_catégorie' => $request->id_catégorie,
             'mot_de_passe' => Hash::make($request->mot_de_passe),
-            'is_validated' => false 
+            'is_validated' => false
         ]);
 
         $token = $societe->createToken('societe-token')->plainTextToken;
