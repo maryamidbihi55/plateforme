@@ -65,9 +65,9 @@ const HowItWorks = () => {
         </div>
         
         <div className="text-center mt-12">
-          <button className="bg-accent-500 hover:bg-accent-600 text-white font-medium py-3 px-6 rounded-md transition-colors">
+          {/* <button className="bg-accent-500 hover:bg-accent-600 text-white font-medium py-3 px-6 rounded-md transition-colors">
             Trouver un professionnel
-          </button>
+          </button> */}
         </div>
       </div>
     </section>

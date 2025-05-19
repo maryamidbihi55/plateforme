@@ -25,9 +25,7 @@ const ServiceCategoryCard = ({ id, name, icon, description, className }: Service
           <h3 className="font-semibold text-lg mb-2">{name}</h3>
           <p className="text-muted-foreground text-sm">{description}</p>
         </CardContent>
-        <CardFooter className="pt-0 pb-4 justify-center">
-          <span className="text-servigo-600 text-sm font-medium">Découvrir &rarr;</span>
-        </CardFooter>
+        
       </Card>
     </Link>
   );
