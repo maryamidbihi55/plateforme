@@ -6,6 +6,7 @@ use App\Models\Agence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AgenceController extends Controller
 {
@@ -31,7 +32,7 @@ class AgenceController extends Controller
             'email'        => $request->email,
             'mot_de_passe' => Hash::make($request->mot_de_passe),
             'id_société'   => $request->id_société,
-            'is_validated' => false 
+            'is_validated' => false
         ]);
 
         $token = $agence->createToken('agence-token')->plainTextToken;
@@ -78,4 +79,13 @@ class AgenceController extends Controller
         'agence'  => $agence
     ]);
 }
+public function logout(Request $request)
+{
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json([
+        'message' => 'Déconnexion réussie.'
+    ]);
+}
+
 }
