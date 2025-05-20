@@ -10,4 +10,17 @@ class CategorieController extends Controller
     {
         return response()->json(CategoriesServices::all());
     }
+    public function agencesParCategorieId($id)
+    {
+        $categorie = CategoriesServices::with('agences')->find($id);
+
+        if (!$categorie) {
+            return response()->json(['message' => 'Catégorie non trouvée'], 404);
+        }
+
+        return response()->json([
+            'categorie' => $categorie->nom_catégorie,
+            'agences' => $categorie->agences
+        ]);
+    }
 }

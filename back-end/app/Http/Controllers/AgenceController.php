@@ -87,5 +87,14 @@ public function logout(Request $request)
         'message' => 'Déconnexion réussie.'
     ]);
 }
+public function show($id)
+{
+    $agence = Agence::with(['societePartenaire', 'agents', 'CategoriesServices'])->find($id);
 
+    if (!$agence) {
+        return response()->json(['message' => 'Agence non trouvée'], 404);
+    }
+
+    return response()->json($agence);
+}
 }

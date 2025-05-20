@@ -15,7 +15,8 @@ class Agence extends Model {
         'id_société',
         'mot_de_passe',
         'email',
-        'is_validated'
+        'is_validated',
+        'id_categorie_service'
     ];
 
     public function societePartenaire() {
@@ -28,5 +29,10 @@ class Agence extends Model {
 
     public function demandes() {
         return $this->hasMany(ServiceDemande::class, 'id_agence');
+    }
+
+     public function CategoriesServices()
+    {
+        return $this->belongsTo(CategoriesServices::class, 'id_categorie_service');
     }
 }
