@@ -106,9 +106,7 @@ const Index = () => {
             </div>
             
             <div className="text-center mt-12">
-              <Button className="bg-servigo-600 hover:bg-servigo-700">
-                Voir tous les services <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              
             </div>
           </div>
         </section>
@@ -187,14 +185,7 @@ const Index = () => {
             <p className="text-xl text-servigo-100 mb-8 max-w-2xl mx-auto">
               Des milliers de professionnels qualifiés sont disponibles pour répondre à tous vos besoins de services à domicile.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-accent-500 hover:bg-accent-600 text-white py-3 px-8 text-lg">
-                Trouver un professionnel
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10">
-                Devenir partenaire
-              </Button>
-            </div>
+            
           </div>
         </section>
       </main>

@@ -32,7 +32,9 @@ Route::prefix('client')->group(function () {
        Route::delete('/reservations/{id}', [ServiceDemandeController::class, 'destroy']);
 });
 });
+
 Route::get('/categories', [CategorieController::class, 'index']);
+Route::get('/categorie/{id}/agences', [CategorieController::class, 'agencesParCategorieId']);
 
 Route::prefix('societe')->group(function () {
     Route::post('/register', [SocietePartenaireController::class, 'register']);
@@ -51,8 +53,14 @@ Route::prefix('agent')->group(function () {
     Route::post('/register', [AgentController::class, 'register']);
     Route::post('/login', [AgentController::class, 'login']);
 });
+
 Route::prefix('agence')->group(function () {
     Route::post('/register', [AgenceController::class, 'register']);
     Route::post('/login', [AgenceController::class, 'login']);
     Route::middleware('auth:sanctum')->post('/logout', [AgenceController::class, 'logout']);
+    Route::get('/{id}', [AgenceController::class, 'show']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/avis', [AvisController::class, 'store']);
 });

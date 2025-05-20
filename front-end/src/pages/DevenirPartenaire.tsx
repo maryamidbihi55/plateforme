@@ -29,12 +29,7 @@ const DevenirPartenaire = () => {
             <p className="text-xl text-servigo-100 max-w-2xl mx-auto mb-8">
               Rejoignez notre réseau de professionnels qualifiés et développez votre activité
             </p>
-            <ButtonWithEffect 
-              hoverEffect="glow"
-              className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3 text-lg"
-            >
-              Inscrivez-vous maintenant
-            </ButtonWithEffect>
+           
           </div>
         </section>
         
@@ -78,51 +73,7 @@ const DevenirPartenaire = () => {
         </section>
         
         {/* Formulaire */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto bg-servigo-50 rounded-lg p-8">
-              <h2 className="text-3xl font-bold text-servigo-900 mb-6 text-center">Contactez-nous</h2>
-              <p className="text-servigo-700 mb-8 text-center">Remplissez ce formulaire pour en savoir plus sur le partenariat avec ServiGo</p>
-              
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="nom">Nom</Label>
-                    <Input id="nom" placeholder="Votre nom" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="prenom">Prénom</Label>
-                    <Input id="prenom" placeholder="Votre prénom" />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="votre@email.com" />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="telephone">Téléphone</Label>
-                  <Input id="telephone" placeholder="Votre numéro de téléphone" />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="service">Type de service proposé</Label>
-                  <Input id="service" placeholder="Ex: Plomberie, Électricité, etc." />
-                </div>
-                
-                <div className="text-center">
-                  <ButtonWithEffect 
-                    hoverEffect="glow"
-                    className="bg-servigo-700 hover:bg-servigo-800 text-white px-8 py-3"
-                  >
-                    Envoyer ma demande <ArrowRight className="ml-2 h-4 w-4" />
-                  </ButtonWithEffect>
-                </div>
-              </form>
-            </div>
-          </div>
-        </section>
+        
       </main>
       
       <Footer />
