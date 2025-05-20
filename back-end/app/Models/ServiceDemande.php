@@ -16,7 +16,8 @@ class ServiceDemande extends Model {
         'id_client',
         'id_agent',
         'id_agence',
-        'statut'
+        'statut',
+        'etat_agence'
     ];
 
     public function client() {

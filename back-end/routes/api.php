@@ -59,6 +59,11 @@ Route::prefix('agence')->group(function () {
     Route::post('/login', [AgenceController::class, 'login']);
     Route::middleware('auth:sanctum')->post('/logout', [AgenceController::class, 'logout']);
     Route::get('/{id}', [AgenceController::class, 'show']);
+    Route::post('/valider-agent/{id}', [AgenceController::class, 'validerAgent']);
+    Route::get('/{id}/agents', [AgenceController::class, 'listeAgents']);
+    Route::get('/demandes/{id_agence}', [AgenceController::class, 'demandesParAgence']);
+    Route::post('/traiter-demande/{id}', [AgenceController::class, 'traiterDemande']);
+    Route::post('/affecter-agent/{id_demande}', [AgenceController::class, 'affecterAgent']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
