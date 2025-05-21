@@ -41,7 +41,7 @@ return [
         'provider' => 'clients',
     ],
     'agence' => [
-        'driver' => 'session',
+        'driver' => 'sanctum',
         'provider' => 'agences',
     ],
     'societe' => [
@@ -49,11 +49,11 @@ return [
         'provider' => 'societes',
     ],
     'agent' => [
-        'driver' => 'session',
+        'driver' => 'sanctum',
         'provider' => 'agents',
     ],
     'admin' => [
-        'driver' => 'session',
+        'driver' => 'sanctum',
         'provider' => 'admins',
     ],
 ],

@@ -36,6 +36,7 @@ Route::prefix('client')->group(function () {
 Route::get('/categories', [CategorieController::class, 'index']);
 Route::get('/categorie/{id}/agences', [CategorieController::class, 'agencesParCategorieId']);
 
+/*
 Route::prefix('societe')->group(function () {
     Route::post('/register', [SocietePartenaireController::class, 'register']);
     Route::post('/login', [SocietePartenaireController::class, 'login']);
@@ -47,7 +48,7 @@ Route::prefix('societe')->group(function () {
         Route::get('/stats', [SocietePartenaireController::class, 'getStats']);
     });
 });
-
+*/
 
 Route::prefix('agent')->group(function () {
     Route::post('/register', [AgentController::class, 'register']);
@@ -55,15 +56,23 @@ Route::prefix('agent')->group(function () {
 });
 
 Route::prefix('agence')->group(function () {
+    // Public routes
     Route::post('/register', [AgenceController::class, 'register']);
     Route::post('/login', [AgenceController::class, 'login']);
-    Route::middleware('auth:sanctum')->post('/logout', [AgenceController::class, 'logout']);
-    Route::get('/{id}', [AgenceController::class, 'show']);
-    Route::post('/valider-agent/{id}', [AgenceController::class, 'validerAgent']);
-    Route::get('/{id}/agents', [AgenceController::class, 'listeAgents']);
-    Route::get('/demandes/{id_agence}', [AgenceController::class, 'demandesParAgence']);
-    Route::post('/traiter-demande/{id}', [AgenceController::class, 'traiterDemande']);
-    Route::post('/affecter-agent/{id_demande}', [AgenceController::class, 'affecterAgent']);
+
+    // Routes protégées par Sanctum (après connexion avec token)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AgenceController::class, 'logout']);
+        Route::get('/me', [AgenceController::class, 'show']);
+        Route::post('/valider-agent/{id}', [AgenceController::class, 'validerAgent']);
+        Route::post('/refuser-agent/{id}', [AgenceController::class, 'refuserAgent']);
+        Route::get('/agents', [AgenceController::class, 'listeAgents']);
+        Route::get('/demandes', [AgenceController::class, 'demandesParAgence']);
+        Route::post('/traiter-demande/{id}', [AgenceController::class, 'traiterDemande']);
+        Route::post('/affecter-agent/{id_demande}', [AgenceController::class, 'affecterAgent']);
+        Route::get('/profile', [AgenceController::class, 'profile']);
+        Route::put('/profile/update', [AgenceController::class, 'updateProfile']);
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
