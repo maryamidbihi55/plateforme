@@ -81,3 +81,17 @@ Route::prefix('agence')->group(function () {
         Route::put('/profile/update', [AgenceController::class, 'updateProfile']);
     });
 });
+
+Route::prefix('admin')->group(function () {
+    Route::post('/register', [AdministrationController::class, 'register']);
+    Route::post('/login', [AdministrationController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AdminController::class, 'logout']);
+        Route::put('/valider_agences/{id}', [AdministrationController::class, 'validerAgence']);
+        Route::put('/refuser_agences/{id}', [AdministrationController::class, 'refuserAgence']);
+        Route::get('/agences/{id}/agents', [AdministrationController::class, 'agentsParAgence']);
+        Route::get('/demandes', [AdministrationController::class, 'listeDemandes']);
+    });
+});
+
