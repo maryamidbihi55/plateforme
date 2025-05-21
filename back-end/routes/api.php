@@ -30,6 +30,7 @@ Route::prefix('client')->group(function () {
        Route::get('/reservations', [ServiceDemandeController::class, 'index']);
        Route::post('/reservations', [ServiceDemandeController::class, 'store']);
        Route::delete('/reservations/{id}', [ServiceDemandeController::class, 'destroy']);
+       Route::post('/avis', [AvisController::class, 'store']);
 });
 });
 
@@ -53,14 +54,20 @@ Route::prefix('societe')->group(function () {
 Route::prefix('agent')->group(function () {
     Route::post('/register', [AgentController::class, 'register']);
     Route::post('/login', [AgentController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AgentController::class, 'logout']);
+    Route::get('/profile', [AgentController::class, 'profile']);
+    Route::put('/profile/update', [AgentController::class, 'updateProfile']);
+    Route::get('/missions', [AgentController::class, 'mesDemandes']);
+    Route::put('/mission/{id}/terminer', [AgentController::class, 'terminerDemande']);
+});
 });
 
 Route::prefix('agence')->group(function () {
-    // Public routes
+
     Route::post('/register', [AgenceController::class, 'register']);
     Route::post('/login', [AgenceController::class, 'login']);
 
-    // Routes protégées par Sanctum (après connexion avec token)
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AgenceController::class, 'logout']);
         Route::get('/me', [AgenceController::class, 'show']);
@@ -73,8 +80,4 @@ Route::prefix('agence')->group(function () {
         Route::get('/profile', [AgenceController::class, 'profile']);
         Route::put('/profile/update', [AgenceController::class, 'updateProfile']);
     });
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/avis', [AvisController::class, 'store']);
 });

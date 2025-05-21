@@ -6,44 +6,46 @@ use App\Models\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\ServiceDemande;
 class AgentController extends Controller
 {
     public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required|string|max:255',
-            'prénom' => 'required|string|max:255',
-            'email' => 'required|email|unique:agents,email',
-            'téléphone' => 'required|string|max:20',
-            'spécialité' => 'nullable|string|max:255',
-            'mot_de_passe' => 'required|string|min:6',
-            'id_agence' => 'required|exists:agences,id',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'nom' => 'required|string|max:255',
+        'prenom' => 'required|string|max:255',
+        'email' => 'required|email|unique:agents,email',
+        'telephone' => 'required|string|max:20',
+        'specialite' => 'nullable|string|max:255',
+        'mot_de_passe' => 'required|string|min:6',
+        'id_agence' => 'required|exists:agences,id',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $agent = Agent::create([
-            'nom' => $request->nom,
-            'prénom' => $request->prénom,
-            'email' => $request->email,
-            'téléphone' => $request->téléphone,
-            'spécialité' => $request->spécialité,
-            'id_agence' => $request->id_agence,
-            'mot_de_passe' => Hash::make($request->mot_de_passe),
-            'is_validated' => false ,
-        ]);
-
-        $token = $agent->createToken('agent-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Agent enregistré avec succès',
-            'token' => $token,
-            'agent' => $agent
-        ]);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    $agent = Agent::create([
+        'nom' => $request->nom,
+        'prenom' => $request->prenom,
+        'email' => $request->email,
+        'telephone' => $request->telephone,
+        'specialite' => $request->specialite,
+        'id_agence' => $request->id_agence,
+        'mot_de_passe' => Hash::make($request->mot_de_passe),
+        'is_validated' => false,
+        'is_refused' => false,
+    ]);
+
+    // Créer un token si tu utilises Sanctum
+    $token = $agent->createToken('agent-token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'Agent enregistré avec succès',
+        'token' => $token,
+        'agent' => $agent
+    ], 201);
+}
 
     public function login(Request $request)
 {
@@ -77,42 +79,90 @@ class AgentController extends Controller
         'agent' => $agent
     ]);
 }
+public function logout(Request $request)
+{
+    $request->user()->currentAccessToken()->delete();
 
+    return response()->json([
+        'message' => 'Déconnexion réussie'
+    ]);
+}
+public function profile(Request $request)
+{
+    return response()->json($request->user());
+}
+public function updateProfile(Request $request)
+{
+    $agent = $request->user(); // Auth::user()
 
-    public function index()
-    {
-        //
+    // Validation simple
+    $request->validate([
+        'nom' => 'nullable|string|max:255',
+        'prenom' => 'nullable|string|max:255',
+        'email' => 'nullable|email|unique:agents,email,' . $agent->id,
+        'telephone' => 'nullable|string|max:20',
+        'specialite' => 'nullable|string|max:255',
+        'ancien_mot_de_passe' => 'nullable|string',
+        'nouveau_mot_de_passe' => 'nullable|string|min:6|confirmed',
+    ]);
+
+    // Mise à jour des champs de profil
+    $agent->update($request->only(['nom', 'prenom', 'email', 'telephone', 'specialite']));
+
+    // Mise à jour du mot de passe si demandé
+    if ($request->filled('ancien_mot_de_passe') && $request->filled('nouveau_mot_de_passe')) {
+        if (!Hash::check($request->ancien_mot_de_passe, $agent->mot_de_passe)) {
+            return response()->json(['message' => 'Ancien mot de passe incorrect'], 401);
+        }
+
+        $agent->mot_de_passe = Hash::make($request->nouveau_mot_de_passe);
+        $agent->save();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    return response()->json([
+        'message' => 'Profil mis à jour avec succès',
+        'agent' => $agent
+    ]);
+}
+
+public function mesDemandes(Request $request)
+{
+    $agent = $request->user();
+
+    $demandes = ServiceDemande::where('id_agent', $agent->id)->get();
+
+    return response()->json([
+        'message' => 'Liste des demandes affectées à l\'agent',
+        'demandes' => $demandes
+    ]);
+}
+public function terminerDemande($id, Request $request)
+{
+    $agent = $request->user();
+
+    $demande = ServiceDemande::where('id', $id)
+                      ->where('id_agent', $agent->id)
+                      ->first();
+
+    if (!$demande) {
+        return response()->json([
+            'message' => 'Demande introuvable ou non autorisée.'
+        ], 404);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    if ($demande->statut === 'Terminé') {
+        return response()->json([
+            'message' => 'Cette demande est déjà terminée.'
+        ], 400);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    $demande->statut = 'Terminé';
+    $demande->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    return response()->json([
+        'message' => 'Demande marquée comme terminée avec succès.',
+        'demande' => $demande
+    ]);
+}
+
 }
