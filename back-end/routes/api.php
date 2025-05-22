@@ -37,19 +37,6 @@ Route::prefix('client')->group(function () {
 Route::get('/categories', [CategorieController::class, 'index']);
 Route::get('/categorie/{id}/agences', [CategorieController::class, 'agencesParCategorieId']);
 
-/*
-Route::prefix('societe')->group(function () {
-    Route::post('/register', [SocietePartenaireController::class, 'register']);
-    Route::post('/login', [SocietePartenaireController::class, 'login']);
- Route::middleware('auth:societe_api')->group(function () {
-        Route::post('/logout', [SocietePartenaireController::class, 'logout']);
-        Route::get('/profile', [SocietePartenaireController::class, 'getProfile']);
-        Route::put('/profile', [SocietePartenaireController::class, 'updateProfile']);
-        Route::put('/agences/{id}/valider', [SocietePartenaireController::class, 'validerAgence']);
-        Route::get('/stats', [SocietePartenaireController::class, 'getStats']);
-    });
-});
-*/
 
 Route::prefix('agent')->group(function () {
     Route::post('/register', [AgentController::class, 'register']);
@@ -60,20 +47,21 @@ Route::prefix('agent')->group(function () {
     Route::put('/profile/update', [AgentController::class, 'updateProfile']);
     Route::get('/missions', [AgentController::class, 'mesDemandes']);
     Route::put('/mission/{id}/terminer', [AgentController::class, 'terminerDemande']);
+    Route::get('/Historique_missions', [AgentController::class, 'historiqueDemandes']);
 });
 });
 
 Route::prefix('agence')->group(function () {
-
     Route::post('/register', [AgenceController::class, 'register']);
     Route::post('/login', [AgenceController::class, 'login']);
-
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AgenceController::class, 'logout']);
         Route::get('/me', [AgenceController::class, 'show']);
+        Route::get('/agents/non-valides', [AgenceController::class, 'agentsNonValidés']);
         Route::post('/valider-agent/{id}', [AgenceController::class, 'validerAgent']);
         Route::post('/refuser-agent/{id}', [AgenceController::class, 'refuserAgent']);
         Route::get('/agents', [AgenceController::class, 'listeAgents']);
+        Route::get('/agent/{id}', [AgenceController::class, 'detailsAgent']);
         Route::get('/demandes', [AgenceController::class, 'demandesParAgence']);
         Route::post('/traiter-demande/{id}', [AgenceController::class, 'traiterDemande']);
         Route::post('/affecter-agent/{id_demande}', [AgenceController::class, 'affecterAgent']);
@@ -85,11 +73,13 @@ Route::prefix('agence')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::post('/register', [AdministrationController::class, 'register']);
     Route::post('/login', [AdministrationController::class, 'login']);
-
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AdminController::class, 'logout']);
+        Route::post('/logout', [AdministrationController::class, 'logout']);
+        Route::get('/agences/non-validees', [AdministrationController::class, 'agencesNonValidees']);
         Route::put('/valider_agences/{id}', [AdministrationController::class, 'validerAgence']);
         Route::put('/refuser_agences/{id}', [AdministrationController::class, 'refuserAgence']);
+        Route::get('/agences', [AdministrationController::class, 'listeAgences']);
+        Route::get('/agence/{id}', [AdministrationController::class, 'detailsAgence']);
         Route::get('/agences/{id}/agents', [AdministrationController::class, 'agentsParAgence']);
         Route::get('/demandes', [AdministrationController::class, 'listeDemandes']);
     });

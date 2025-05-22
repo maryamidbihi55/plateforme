@@ -129,13 +129,17 @@ public function mesDemandes(Request $request)
 {
     $agent = $request->user();
 
-    $demandes = ServiceDemande::where('id_agent', $agent->id)->get();
+    $demandes = ServiceDemande::where('id_agent', $agent->id)
+                ->whereIn('statut', ['En attente', 'En cours'])
+                ->orderBy('created_at', 'desc')
+                ->get();
 
     return response()->json([
-        'message' => 'Liste des demandes affectées à l\'agent',
+        'message' => 'Liste des demandes en cours et en attente',
         'demandes' => $demandes
     ]);
 }
+
 public function terminerDemande($id, Request $request)
 {
     $agent = $request->user();
@@ -164,5 +168,21 @@ public function terminerDemande($id, Request $request)
         'demande' => $demande
     ]);
 }
+
+public function historiqueDemandes(Request $request)
+{
+    $agent = $request->user();
+
+    $demandes = ServiceDemande::where('id_agent', $agent->id)
+                ->where('statut', 'Terminé')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+
+    return response()->json([
+        'message' => 'Historique des demandes terminées',
+        'demandes' => $demandes
+    ]);
+}
+
 
 }

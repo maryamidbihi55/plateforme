@@ -98,6 +98,13 @@ public function logout(Request $request)
         'message' => 'Déconnexion réussie'
     ]);
 }
+public function agencesNonValidees()
+{
+    $agences = Agence::where('is_validated', false)->get();
+
+    return response()->json($agences);
+}
+
 public function refuserAgence($id)
 {
     $agence = Agence::find($id);
@@ -132,4 +139,25 @@ public function listeDemandes()
 
     return response()->json($demandes);
 }
+public function detailsAgence($id)
+{
+    $agence = Agence::with('agents')->find($id);
+
+    if (!$agence) {
+        return response()->json(['message' => 'Agence non trouvée'], 404);
+    }
+
+    return response()->json($agence);
+}
+public function listeAgences()
+{
+    $agences = Agence::where('is_validated', true)
+                ->withCount('agents')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+    return response()->json($agences);
+}
+
+
 }
