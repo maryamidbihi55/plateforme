@@ -113,6 +113,14 @@ public function listeAgents(Request $request)
         'agents' => $agents
     ]);
 }
+public function agentsNonValidés(Request $request)
+{
+    $agence = auth()->user();
+
+    $agents = $agence->agents()->where('is_validated', false)->get();
+
+    return response()->json($agents);
+}
 
 public function validerAgent($id)
 {
@@ -305,4 +313,17 @@ public function updateProfile(Request $request)
         'agence' => $agence
     ]);
 }
+public function detailsAgent($id)
+{
+    $agence = auth()->user();
+
+    $agent = $agence->agents()->where('id', $id)->first();
+
+    if (!$agent) {
+        return response()->json(['message' => 'Agent non trouvé ou n\'appartient pas à cette agence'], 404);
+    }
+
+    return response()->json($agent);
+}
+
 }
